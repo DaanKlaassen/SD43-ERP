@@ -17,13 +17,13 @@ export function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
-                        <Link href="/" className="flex items-center">
+                        <Link href="/dashboard" className="flex items-center">
                             <span className="text-white text-xl font-bold">ZEROPOINT</span>
                         </Link>
                     </div>
 
                     <div className="hidden md:flex items-center space-x-4">
-                        <Link href="/urenregistratie" className="text-gray-300 hover:text-white">
+                        <Link href="/hourregistration" className="text-gray-300 hover:text-white">
                             Urenregistratie
                         </Link>
                         <DropdownMenu>
@@ -33,7 +33,9 @@ export function Navbar() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem>Project 1</DropdownMenuItem>
+                                <DropdownMenuItem><Link href="/projectregistration" className="text-gray-300 hover:text-white">
+                                    Projectregistratie
+                                </Link></DropdownMenuItem>
                                 <DropdownMenuItem>Project 2</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
