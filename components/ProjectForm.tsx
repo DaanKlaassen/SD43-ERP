@@ -1,7 +1,8 @@
-'use client'
+"use client";
 
-import { Navbar } from '@/components/Navbar';
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Updated import
+import { Navbar } from '@/components/Navbar';
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,12 +21,50 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarIcon } from 'lucide-react';    
+import { CalendarIcon } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import projectFormBck from "@/app/actions/projectFormBck";
 
 export default function ProjectRegistration() {
+    const [formData, setFormData] = useState({
+        projectName: '',
+        assignedTo: '',
+        description: '',
+        startDate: '',
+        endDate: '',
+        status: ''
+    });
     const [startDate, setStartDate] = useState<Date>();
     const [endDate, setEndDate] = useState<Date>();
+    const router = useRouter(); // Updated usage
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleSelectChange = (value: string) => {
+        setFormData(prevState => ({ ...prevState, status: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const data = new FormData();
+        data.append('projectName', formData.projectName);
+        data.append('assignedTo', formData.assignedTo);
+        data.append('description', formData.description);
+        data.append('startDate', startDate ? startDate.toString() : '');
+        data.append('endDate', endDate ? endDate.toString() : '');
+        data.append('status', formData.status);
+
+        const response = await projectFormBck(data);
+
+        if (response) {
+            router.push('/success');
+        } else {
+            console.error('Failed to submit form');
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#0A192F] text-white">
@@ -36,20 +75,28 @@ export default function ProjectRegistration() {
                     <p className="text-gray-400">Vul de details in om een nieuw project te registreren</p>
                 </div>
 
-                <form className="space-y-6 max-w-4xl mx-auto">
+                <form className="space-y-6 max-w-4xl mx-auto" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="projectName">Projectnaam</Label>
                             <Input
+                                name="projectName"
                                 id="projectName"
-                                className="bg-transparent border-gray-800"
+                                type="text"
+                                required
+                                className="bg-[#0B1218] border-gray-700 text-white focus:border-[#4ADE80] focus:ring-[#4ADE80]"
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="assignedTo">Toegewezen aan:</Label>
                             <Input
+                                name="assignedTo"
                                 id="assignedTo"
-                                className="bg-transparent border-gray-800"
+                                type="text"
+                                required
+                                className="bg-[#0B1218] border-gray-700 text-white focus:border-[#4ADE80] focus:ring-[#4ADE80]"
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -57,8 +104,11 @@ export default function ProjectRegistration() {
                     <div className="space-y-2">
                         <Label htmlFor="description">Beschrijving</Label>
                         <Textarea
+                            name="description"
                             id="description"
-                            className="min-h-[150px] bg-transparent border-gray-800"
+                            required
+                            className="bg-[#0B1218] border-gray-700 text-white focus:border-[#4ADE80] focus:ring-[#4ADE80]"
+                            onChange={handleInputChange}
                         />
                     </div>
 
@@ -117,7 +167,7 @@ export default function ProjectRegistration() {
 
                         <div className="space-y-2">
                             <Label>Status</Label>
-                            <Select>
+                            <Select onValueChange={handleSelectChange}>
                                 <SelectTrigger className="bg-transparent border-gray-800">
                                     <SelectValue placeholder="Selecteer status"/>
                                 </SelectTrigger>
@@ -132,12 +182,11 @@ export default function ProjectRegistration() {
                         </div>
                     </div>
 
-                    <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
+                    <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white">
                         Project Registreren
                     </Button>
                 </form>
             </main>
-
         </div>
     );
 }

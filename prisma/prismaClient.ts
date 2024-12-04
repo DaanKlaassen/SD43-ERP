@@ -1,6 +1,6 @@
-import {PrismaClient} from '@prisma/client'
+                                import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export async function insertUser(email: string, name: string, password: string) {
     try {
@@ -10,11 +10,15 @@ export async function insertUser(email: string, name: string, password: string) 
                 name: name,
                 password: password,
                 createdAt: new Date(),
-                updatedAt: new Date()
-            }
-        })
-    } catch (error) {
-        console.error(error)
+                updatedAt: new Date(),
+            },
+        });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
     }
 }
 
@@ -22,15 +26,19 @@ export async function getUserByEmail(email: string) {
     try {
         return await prisma.user.findUnique({
             where: {
-                email: email
-            }
-        })
-    } catch (error) {
-        console.error(error)
+                email: email,
+            },
+        });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
     }
 }
 
-export const db = prisma
+export const db = prisma;
 
 export async function getAllUsers() {
     try {
@@ -38,10 +46,40 @@ export async function getAllUsers() {
             select: {
                 id: true,
                 name: true,
-                email: true
-            }
-        })
-    } catch (error) {
-        console.error(error)
+                email: true,
+            },
+        });
+    }
+    catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
+    }
+}
+
+export async function insertProject(data: {
+    projectName: string;
+    assignedTo: string;
+    description: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+}) {
+    try {
+        return await prisma.project.create({
+            data: {
+                ...data,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
     }
 }

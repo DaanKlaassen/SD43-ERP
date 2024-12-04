@@ -9,9 +9,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {logout} from "@/app/actions/logout";
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
+import { logout } from '@/app/actions/logout'; // Import your logout function
 
 export function Navbar() {
+    const router = useRouter(); // Use router for navigation
+
+    const handleLogout = async () => {
+        try {
+            await logout(); // Call the logout function
+            router.push('/login'); // Redirect to login page
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
     return (
         <nav className="bg-[#0A192F] border-b border-slate-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,16 +45,18 @@ export function Navbar() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem><Link href="/projectregistration" className="text-gray-300 hover:text-white">
-                                    Projectregistratie
-                                </Link></DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Link href="/projectregistration" className="text-gray-300 hover:text-white">
+                                        Projectregistratie
+                                    </Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Project 2</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Link href="/werknemers" className="text-gray-300 hover:text-white">
                             Werknemers
                         </Link>
-                        <Button variant="destructive" size="sm" onClick={logout}>
+                        <Button variant="destructive" size="sm" onClick={handleLogout}>
                             Sign out
                         </Button>
                     </div>
