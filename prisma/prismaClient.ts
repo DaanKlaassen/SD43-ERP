@@ -83,3 +83,22 @@ export async function insertProject(data: {
         }
     }
 }
+
+// The getAllProjects function is added here
+export async function getAllProjects() {
+    try {
+        return await prisma.project.findMany({
+            select: {
+                id: true,
+                projectName: true,
+                description: true,
+                startDate: true,
+                endDate: true,
+                status: true,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        return [];
+    }
+}
