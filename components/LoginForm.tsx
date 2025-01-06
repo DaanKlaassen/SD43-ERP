@@ -1,31 +1,48 @@
 "use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import {Eye} from 'lucide-react'
+import Image from "next/image";
+import Link from "next/link";
+import {Eye, EyeOff} from "lucide-react";
 
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
 import doCredentialLogin from "@/app/actions/doCredentialLogin";
 import {useRouter} from "next/navigation";
 import {DEFAULT_LOGIN_REDIRECT} from "@/routes";
+import {useState} from "react";
 
 export default function LoginForm() {
     const router = useRouter();
+    const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+
+
     const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+        event.preventDefault();
+
+        // Clear previous errors
+        setError(null);
+
         try {
-            const formdata = new FormData(event.currentTarget)
-            const response = await doCredentialLogin(formdata)
+            // Get form data
+            const formdata = new FormData(event.currentTarget);
+
+            // Attempt login
+            const response = await doCredentialLogin(formdata);
+
             if (!response.success) {
-                console.error(response.error ?? "An unknown error occurred")
+                // Display generic error message on failure
+                setError("Onjuist e-mailadres of wachtwoord.");
             } else {
-                router.push(DEFAULT_LOGIN_REDIRECT)
+                // Redirect on success
+                router.push(DEFAULT_LOGIN_REDIRECT);
             }
-        } catch (error) {
-            console.error(error)
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("Onjuist e-mailadres of wachtwoord."); // Generic error message for any exceptions
         }
-    }
+    };
+
     return (
         <div className="min-h-screen flex bg-[#081929]">
             <div className="w-full md:w-1/2 flex items-center justify-center p-8">
@@ -72,18 +89,27 @@ export default function LoginForm() {
                                 <Input
                                     name="password"
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"} // Dynamically set the input type
                                     required
                                     className="bg-[#0B1218] border-gray-700 text-white focus:border-[#4ADE80] focus:ring-[#4ADE80] pr-10"
                                 />
                                 <button
                                     type="button"
+                                    onMouseDown={() => setShowPassword(true)} // Show password when holding
+                                    onMouseUp={() => setShowPassword(false)} // Hide password when released
+                                    onMouseLeave={() => setShowPassword(false)} // Ensure password is hidden if mouse leaves
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
                                 >
-                                    <Eye className="h-5 w-5"/>
+                                    {showPassword ? (
+                                        <EyeOff className="h-5 w-5"/>
+                                    ) : (
+                                        <Eye className="h-5 w-5"/>
+                                    )}
                                 </button>
                             </div>
                         </div>
+
+                        {error && <p className="text-red-500 text-sm">{error}</p>}
 
                         <Button
                             type="submit"
@@ -94,7 +120,9 @@ export default function LoginForm() {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <span className="text-gray-400">Heb je nog geen account? </span>
+                        <span className="text-gray-400">
+                            Heb je nog geen account?{" "}
+                        </span>
                         <Link
                             href="/registration"
                             className="text-[#4ADE80] hover:underline"
@@ -107,7 +135,7 @@ export default function LoginForm() {
 
             <div className="hidden md:block md:w-1/2 bg-gray-200">
                 <div className="h-full w-full flex items-center justify-center">
-                    <Image
+                <Image
                         src="/placeholder.svg?height=300&width=300"
                         alt="Placeholder Image"
                         width={300}
@@ -117,6 +145,5 @@ export default function LoginForm() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
-
