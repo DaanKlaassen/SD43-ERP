@@ -1,8 +1,8 @@
 "use client";
 
-import {Dashboard} from '@/components/Dashboard';
-import {useEffect, useState} from 'react';
-import fetchUsers from '@/app/actions/fetchUsers';
+import { Dashboard } from '@/components/Dashboard';
+import { useEffect, useState } from 'react';
+import { getAllUsers } from '@/app/actions/fetchUsers';
 
 interface User {
     id: string;
@@ -15,15 +15,15 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchTeamMembers() {
-            fetchUsers().then((users) => {
-                setTeamMembers(users.data);
-            });
+            const users = await getAllUsers();
+            setTeamMembers(users);
         }
 
-
-        fetchTeamMembers()
+        fetchTeamMembers();
     }, []);
-    console.log("GILDE{WEBSITE}")
+
+    console.log("GILDE{WEBSITE}");
+
     return (
         <Dashboard>
             <div className="space-y-8">
@@ -49,7 +49,7 @@ export default function Home() {
                         <div className="space-y-3">
                             {teamMembers ? (
                                 <>
-                                    {teamMembers?.map((user: User) => (
+                                    {teamMembers.map((user: User) => (
                                         <div key={user.id} className="flex items-center justify-between">
                                             <p className="text-gray-300">{user.name}</p>
                                             <p className="text-gray-300">{user.email}</p>

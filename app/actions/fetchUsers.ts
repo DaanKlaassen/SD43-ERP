@@ -1,15 +1,20 @@
 "use server";
 
-import {getAllUsers} from "@/prisma/prismaClient";
+import { PrismaClient } from '@prisma/client';
 
-const fetchUsers = async () => {
+const prisma = new PrismaClient();
+
+export async function getAllUsers() {
     try {
-        const users = await getAllUsers()
-        const filteredUsers = users?.filter(user => user.name !== "GILDE{DATABASE}")
-        return {success: true, data: filteredUsers}
+        return await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            },
+        });
     } catch (error) {
-        return {success: false, error: error};
+        console.error("Error fetching users:", error);
+        return [];
     }
 }
-
-export default fetchUsers;
