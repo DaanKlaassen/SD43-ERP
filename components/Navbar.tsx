@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
-import { logout } from '@/app/actions/logout'; // Import your logout function
+import { logout } from '@/app/actions/logout';
 
 export function Navbar() {
     const router = useRouter(); // Use router for navigation
@@ -50,7 +50,9 @@ export function Navbar() {
                                         Projectregistratie
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>Project 2</DropdownMenuItem>
+                                <DropdownMenuItem><Link href="/projectview" className="text-gray-300 hover:text-white">
+                                    Projectoverzicht
+                                </Link></DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Link href="/werknemers" className="text-gray-300 hover:text-white">

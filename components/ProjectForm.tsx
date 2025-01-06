@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // Updated import
-import { Navbar } from '@/components/Navbar';
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +59,7 @@ export default function ProjectRegistration() {
         const response = await projectFormBck(data);
 
         if (response) {
-            router.push('/success');
+            router.push('/projectview'); // Updated redirect
         } else {
             console.error('Failed to submit form');
         }
@@ -68,7 +67,7 @@ export default function ProjectRegistration() {
 
     return (
         <div className="min-h-screen bg-[#0A192F] text-white">
-            <Navbar/>
+
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 <div className="space-y-2 mb-8 text-center">
                     <h1 className="text-3xl font-bold">Project Registratie</h1>
